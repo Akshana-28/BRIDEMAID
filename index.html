@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Bridesmaid Proposal 💍</title>
+
+  <!-- ✅ EmailJS library (added) -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+  <style>
+    :root{
+      --bg1:#ffd1dc;
+      --bg2:#ffe7c7;
+      --bg3:#d6f5ff;
+      --card:#ffffffcc;
+      --txt:#2b2b2b;
+      --accent:#ff4d7d;
+      --accent2:#7c4dff;
+    }
+
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--txt);
+      overflow:hidden;
+      background: linear-gradient(120deg, var(--bg1), var(--bg2), var(--bg3));
+      background-size: 200% 200%;
+      animation: bgShift 10s ease-in-out infinite;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    @keyframes bgShift{
+      0%{background-position:0% 50%}
+      50%{background-position:100% 50%}
+      100%{background-position:0% 50%}
+    }
+
+    .hearts{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      overflow:hidden;
+      z-index:0;
+    }
+    .heart{
+      position:absolute;
+      width:16px;height:16px;
+      transform: rotate(45deg);
+      background: rgba(255,77,125,.55);
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,.08));
+      animation: floatUp linear infinite;
+    }
+    .heart:before,.heart:after{
+      content:"";
+      position:absolute;
+      width:16px;height:16px;
+      border-radius:50%;
+      background: inherit;
+    }
+    .heart:before{left:-8px; top:0;}
+    .heart:after{left:0; top:-8px;}
+    @keyframes floatUp{
+      from{ transform: translateY(110vh) rotate(45deg) scale(.8); opacity:.0;}
+      10%{opacity:.9;}
+      to{ transform: translateY(-20vh) rotate(45deg) scale(1.2); opacity:0;}
+    }
+
+    .wrap{
+      position:relative;
+      z-index:2;
+      width:min(720px, 92vw);
+      padding:28px;
+    }
+    .card{
+      background: var(--card);
+      border:1px solid rgba(255,255,255,.7);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 20px 60px rgba(0,0,0,.12);
+      border-radius: 22px;
+      padding: 26px 22px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .card:before{
+      content:"";
+      position:absolute;
+      inset:-60%;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,.65), transparent 40%),
+        radial-gradient(circle at 70% 60%, rgba(255,255,255,.45), transparent 45%),
+        radial-gradient(circle at 50% 85%, rgba(255,255,255,.35), transparent 50%);
+      animation: shimmer 6s ease-in-out infinite;
+      transform: rotate(12deg);
+      opacity:.6;
+      pointer-events:none;
+    }
+    @keyframes shimmer{
+      0%,100%{ transform: translate(-4%, -2%) rotate(12deg); }
+      50%{ transform: translate(4%, 2%) rotate(12deg); }
+    }
+
+    .topline{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      position:relative;
+      z-index:2;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      background: rgba(255,255,255,.75);
+      border:1px solid rgba(0,0,0,.06);
+      border-radius: 999px;
+      font-weight:600;
+      font-size:13px;
+    }
+    .pulseDot{
+      width:10px;height:10px;border-radius:50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 rgba(255,77,125,.7);
+      animation: pulse 1.4s infinite;
+    }
+    @keyframes pulse{
+      0%{ box-shadow: 0 0 0 0 rgba(255,77,125,.55); }
+      70%{ box-shadow: 0 0 0 14px rgba(255,77,125,0); }
+      100%{ box-shadow: 0 0 0 0 rgba(255,77,125,0); }
+    }
+
+h1{
+  margin: 18px 0 10px;
+  font-size: clamp(30px, 6vw, 40px); /* Bigger */
+  line-height: 1.1;
+  text-align: center;                /* Centered */
+  font-weight: 600;
+  position: relative;
+  z-index: 2;
+}
+
+.subtitle{
+  margin: 0 0 22px;
+  font-size: clamp(15px, 3vw, 18px); /* Slightly bigger */
+  opacity: .7;
+  text-align: center;               /* Centered */
+  position: relative;
+  z-index: 2;
+}
+
+
+    .type{
+      font-weight:700;
+      color: var(--accent2);
+      display:inline-block;
+      border-right: 3px solid rgba(0,0,0,.35);
+      white-space:nowrap;
+      overflow:hidden;
+      max-width: 0;
+      animation: typing 3.2s steps(34,end) forwards, caret 700ms steps(1,end) infinite;
+    }
+    @keyframes typing { to { max-width: 35ch; } }
+    @keyframes caret { 50% { border-color: transparent; } }
+
+    .envelopeStage{
+      display:grid;
+      place-items:center;
+      margin: 18px 0 18px;
+      position:relative;
+      z-index:2;
+    }
+    .envelope{
+      width: 300px;
+      height: 160px;
+      position:relative;
+      transform: translateY(0);
+      transition: transform .35s ease;
+      cursor:pointer;
+      user-select:none;
+    }
+    .envelope:hover{ transform: translateY(-4px); }
+
+    .envBody{
+      position:absolute; inset:0;
+      background: rgba(185, 166, 129, 0.9);
+      border: 1px solid rgba(165, 33, 33, 0.08);
+      border-radius: 16px;
+      box-shadow: 0 14px 30px rgba(0,0,0,.10);
+      overflow:hidden;
+    }
+    .envBody:after{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        linear-gradient(135deg, rgba(255,77,125,.18), transparent 55%),
+        linear-gradient(315deg, rgba(124,77,255,.14), transparent 60%);
+      opacity:.9;
+    }
+    .flap{
+      position:absolute;
+      left:0; right:0; top:-1px;
+      height: 88px;
+      transform-origin: top center;
+      transform: rotateX(0deg);
+      transition: transform .7s cubic-bezier(.2,.9,.2,1);
+      filter: drop-shadow(0 10px 10px rgba(0,0,0,.08));
+    }
+    .flap:before{
+      content:"";
+      position:absolute; inset:0;
+      background: rgba(255,255,255,.95);
+      border:1px solid rgba(0,0,0,.08);
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
+    }
+
+    .letter{
+      position:absolute;
+      left:14px; right:14px; bottom:14px;
+      height: 120px;
+      background: white;
+      border-radius: 12px;
+      border:1px solid rgba(0,0,0,.08);
+      box-shadow: 0 10px 18px rgba(0,0,0,.10);
+      transform: translateY(58px);
+      transition: transform .75s cubic-bezier(.2,.9,.2,1);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:14px;
+      text-align:center;
+      font-weight:800;
+      color: var(--accent);
+    }
+    .open .flap{ transform: rotateX(180deg); }
+    .open .letter{ transform: translateY(-8px); }
+
+    .actions{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      justify-content:center;
+      margin-top: 16px;
+      position:relative;
+      z-index:2;
+    }
+    button{
+      border:0;
+      padding: 16px 18px;
+      border-radius: 14px;
+      font-weight:800;
+      cursor:pointer;
+      transition: transform .15s ease, box-shadow .2s ease, filter .2s ease;
+      box-shadow: 0 12px 26px rgba(0,0,0,.12);
+    }
+    button:active{ transform: translateY(1px) scale(.99); }
+
+    .yes{
+      background: linear-gradient(135deg, var(--accent), #ff9bb5);
+      color:white;
+      position:relative;
+      overflow:hidden;
+    }
+    .yes:after{
+      content:"";
+      position:absolute;
+      inset:-40%;
+      background: linear-gradient(120deg, transparent 40%, rgba(255,255,255,.55), transparent 60%);
+      transform: translateX(-60%) rotate(18deg);
+      animation: sweep 2.4s ease-in-out infinite;
+      pointer-events:none;
+    }
+    @keyframes sweep{
+      0%{ transform: translateX(-70%) rotate(18deg); opacity:.0; }
+      25%{opacity:.9;}
+      60%{opacity:.2;}
+      100%{ transform: translateX(70%) rotate(18deg); opacity:0; }
+    }
+
+    .reveal{
+      margin-top: 16px;
+      background: rgba(255,255,255,.82);
+      border:1px solid rgba(0,0,0,.06);
+      border-radius: 18px;
+      padding: 14px;
+      display:none;
+      position:relative;
+      z-index:2;
+      animation: pop .35s ease;
+    }
+    @keyframes pop{
+      from{ transform: scale(.98); opacity:0; }
+      to{ transform: scale(1); opacity:1; }
+    }
+    .reveal h2{ margin:0 0 6px; }
+    .reveal p{ margin:0; opacity:.9; line-height:1.4; }
+
+    canvas#confetti{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index:3;
+    }
+
+    .sparkle{
+      position:fixed;
+      width:8px;height:8px;
+      border-radius:50%;
+      background: rgba(255,255,255,.9);
+      box-shadow: 0 0 18px rgba(255,255,255,.8);
+      pointer-events:none;
+      z-index:4;
+      animation: sparkle .7s ease-out forwards;
+    }
+    @keyframes sparkle{
+      from{ transform: translate(-50%,-50%) scale(1); opacity:1; }
+      to{ transform: translate(-50%,-70%) scale(0); opacity:0; }
+    }
+
+.hint{
+  text-align:center;
+  font-size: clamp(18px, 3vw, 26px); /* ✅ bigger */
+  font-weight: 900;                 /* ✅ bolder */
+  opacity: .95;                     /* ✅ clearer */
+  margin-top: 14px;
+  position: relative;
+  z-index: 2;
+}
+
+  </style>
+</head>
+<body>
+
+  <canvas id="confetti"></canvas>
+  <div class="hearts" id="hearts"></div>
+
+  <div class="wrap">
+    <div class="card">
+      <div class="topline">
+        <div class="badge"><span class="pulseDot"></span> Bridesmaid Mission</div>
+        <div class="badge">💖 Tap the envelope</div>
+      </div>
+
+      <h1>Hey Beautiful 💖 </h1>
+      <p class="subtitle">
+
+      </p>
+
+      <div class="envelopeStage">
+        <div class="envelope" id="envelope" aria-label="Open envelope">
+          <div class="envBody"></div>
+          <div class="flap"></div>
+          <div class="letter" id="letterText">Will you be my bridesmaid?💍</div>
+        </div>
+      </div>
+
+      <!-- ✅ ONLY YES button now -->
+      <div class="actions">
+        <button class="yes" id="yesBtn">YES!! 💐</button>
+      </div>
+
+      <div class="reveal" id="reveal">
+        <h2>YAYYYY!!! 🎉</h2>
+        <p id="revealText">
+          I can’t imagine this day without you by my side.
+          Get ready for dress shopping, cute pics, and chaos (the fun kind) 🥹💗
+        </p>
+      </div>
+
+      <div class="hint">Save the Date: 28 June 2026</div>
+    </div>
+  </div>
+
+  <script>
+    // ✅ EmailJS init (added)
+    (function () {
+      emailjs.init("oG7k_MLOg6d4E86aU"); // Public Key
+    })();
+
+    /* ---------- Floating hearts generator ---------- */
+    const hearts = document.getElementById("hearts");
+    function spawnHeart(){
+      const h = document.createElement("div");
+      h.className = "heart";
+      const left = Math.random() * 100;
+      const size = 10 + Math.random()*18;
+      const dur = 6 + Math.random()*7;
+      const delay = Math.random()*2;
+      h.style.left = left + "vw";
+      h.style.width = size + "px";
+      h.style.height = size + "px";
+      h.style.animationDuration = dur + "s";
+      h.style.animationDelay = delay + "s";
+      h.style.opacity = (0.35 + Math.random()*0.6).toFixed(2);
+      hearts.appendChild(h);
+      setTimeout(() => h.remove(), (dur+delay) * 1000);
+    }
+    for(let i=0;i<18;i++) spawnHeart();
+    setInterval(spawnHeart, 450);
+
+    /* ---------- Envelope open animation ---------- */
+    const envelope = document.getElementById("envelope");
+    envelope.addEventListener("click", () => {
+      envelope.classList.toggle("open");
+      if(envelope.classList.contains("open")){
+        softPop();
+      }
+    });
+
+    /* ---------- Sparkle trail (mouse/tap) ---------- */
+    const sparkle = (x,y) => {
+      const s = document.createElement("div");
+      s.className = "sparkle";
+      s.style.left = x + "px";
+      s.style.top  = y + "px";
+      document.body.appendChild(s);
+      setTimeout(()=>s.remove(), 700);
+    };
+    window.addEventListener("mousemove", (e)=>{
+      if(Math.random() < 0.45) sparkle(e.clientX, e.clientY);
+    });
+    window.addEventListener("touchmove", (e)=>{
+      const t = e.touches[0];
+      if(t) sparkle(t.clientX, t.clientY);
+    }, {passive:true});
+
+    /* ---------- Confetti (simple canvas) ---------- */
+    const canvas = document.getElementById("confetti");
+    const ctx = canvas.getContext("2d");
+    const DPR = Math.min(2, window.devicePixelRatio || 1);
+    function resize(){
+      canvas.width = Math.floor(window.innerWidth * DPR);
+      canvas.height = Math.floor(window.innerHeight * DPR);
+    }
+    window.addEventListener("resize", resize);
+    resize();
+
+    let confetti = [];
+    function burstConfetti(count=140){
+      const w = canvas.width, h = canvas.height;
+      for(let i=0;i<count;i++){
+        confetti.push({
+          x: w/2 + (Math.random()*80 - 40) * DPR,
+          y: h/2 + (Math.random()*40 - 20) * DPR,
+          vx:(Math.random()*10 - 5) * DPR,
+          vy:(Math.random()*-12 - 4) * DPR,
+          g: (0.35 + Math.random()*0.25) * DPR,
+          r: (3 + Math.random()*5) * DPR,
+          a: 1,
+          rot: Math.random()*Math.PI,
+          vr: (Math.random()*0.3 - 0.15),
+          hue: Math.floor(Math.random()*360)
+        });
+      }
+    }
+    function tick(){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      confetti = confetti.filter(p => p.a > 0.02);
+      for(const p of confetti){
+        p.vy += p.g;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rot += p.vr;
+        p.a *= 0.985;
+
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.globalAlpha = p.a;
+        ctx.fillStyle = `hsl(${p.hue} 85% 70%)`;
+        ctx.fillRect(-p.r, -p.r/2, p.r*2.2, p.r);
+        ctx.restore();
+      }
+      requestAnimationFrame(tick);
+    }
+    tick();
+
+    /* ---------- Buttons + reveal panel ---------- */
+    const yesBtn = document.getElementById("yesBtn");
+    const reveal = document.getElementById("reveal");
+
+    function softPop(){
+      burstConfetti(35);
+    }
+
+    // ✅ Email sending function (added)
+    function sendYesEmail() {
+      const now = new Date();
+      const timeStr = now.toLocaleString();
+
+      const params = {
+        message: "She said YES!!! 💍💖"
+      };
+
+      return emailjs.send(
+        "service_82ti3ad",
+        "template_6g03fir",
+        params
+      );
+    }
+
+    // ✅ Updated YES button: celebration + email
+    yesBtn.addEventListener("click", async () => {
+      reveal.style.display = "block";
+      burstConfetti(220);
+      envelope.classList.add("open");
+
+      document.getElementById("revealText").textContent =
+        "I’m so happyyyyy 😭💗 Thank you for being my person. Bridesmaid duties: hype, love, and unforgettable memories!";
+
+      try {
+        await sendYesEmail();
+        console.log("Email sent successfully!");
+      } catch (err) {
+        console.error("Email failed:", err);
+        alert("Oops—couldn’t send the notification email. Please try again.");
+      }
+    });
+  </script>
+</body>
+</html>
